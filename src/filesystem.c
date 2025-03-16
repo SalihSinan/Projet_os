@@ -7,26 +7,10 @@
 
 #define FS_SIZE 1024 * 1024 // 1MB pour la partition
 #define BLOCK_SIZE 512      // Taille d'un bloc
-#define MAX_FILES 100       // Nombre max de fichiers
 
-typedef struct
-{
-    char name[100];
-    int start_block;
-    int size;
-    int is_directory;
-    int permissions; // 0: --- | 1: --x | 2: -w- | 4: r--
-} FileEntry;
-
-typedef struct
-{
-    FileEntry files[MAX_FILES];
-    int free_space;
-} FileSystem;
-
-static FileSystem fs;       // Système de fichiers en mémoire
+FileSystem fs;              // Définition de fs (pas de static ici)
 static FILE *fs_file;       // Fichier où la "partition" est stockée
-static int has_changes = 0; // Indicateur pour savoir si une modification a été faite
+static int has_changes = 0; // Indicateur pour savoir si une modification a été effectuée
 
 // 🔹 Initialisation du système de fichiers
 void init_filesystem(const char *fs_name)
