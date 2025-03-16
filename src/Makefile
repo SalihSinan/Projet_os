@@ -1,32 +1,34 @@
+# Définir le compilateur et les options de compilation
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
-OBJ = main.o filesystem.o permissions.o utils.o
+# Liste automatique des fichiers objets
+SRC = $(wildcard *.c)               # Recherche tous les fichiers .c dans le répertoire
+OBJ = $(SRC:.c=.o)                   # Convertir les fichiers .c en .o
+TARGET = gestionnaire                 # Nom de l'exécutable
 
-# Nom de l'exécutable
-TARGET = gestionnaire
+# Règle par défaut : Compiler et lier les objets
+all: $(TARGET)
 
-# Règle par défaut pour compiler le programme
+# Règle pour créer l'exécutable
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
 
-# Compilation des fichiers objets
-main.o: main.c filesystem.h permissions.h utils.h
-	$(CC) $(CFLAGS) -c main.c
-
-filesystem.o: filesystem.c filesystem.h utils.h
-	$(CC) $(CFLAGS) -c filesystem.c
-
-permissions.o: permissions.c permissions.h
-	$(CC) $(CFLAGS) -c permissions.c
-
-utils.o: utils.c utils.h
-	$(CC) $(CFLAGS) -c utils.c
+# Règles pour compiler les fichiers objets (pas besoin de les spécifier une par une)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
 
 # Nettoyage des fichiers objets et de l'exécutable
 clean:
-	rm -f *.o $(TARGET)
+	rm -f $(OBJ) $(TARGET)
 
 # Règle pour exécuter le programme
 run: $(TARGET)
 	./$(TARGET)
+
+# Optionnel : Règle pour installer le programme
+install: $(TARGET)
+	cp $(TARGET) /usr/local/bin/$(TARGET)
+
+# Règle pour vérifier les dépendances
+.PHONY: all clean run install

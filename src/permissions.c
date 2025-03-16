@@ -13,8 +13,17 @@ void set_permissions(const char *name, int permissions)
         {
             fs.files[i].permissions = permissions;
             save_filesystem();
+            // Afficher les permissions sous forme rwx
+            char perms[4] = "---";
+            if (permissions & READ)
+                perms[0] = 'r';
+            if (permissions & WRITE)
+                perms[1] = 'w';
+            if (permissions & EXEC)
+                perms[2] = 'x';
+
             log_message("Permissions modifiées");
-            printf("Permissions de %s mises à %d\n", name, permissions);
+            printf("Permissions de %s mises à %s\n", name, perms);
             return;
         }
     }
@@ -28,6 +37,7 @@ void get_permissions(const char *name)
     {
         if (strcmp(fs.files[i].name, name) == 0)
         {
+            // Afficher les permissions sous forme rwx
             printf("Permissions de %s : ", name);
             printf((fs.files[i].permissions & READ) ? "r" : "-");
             printf((fs.files[i].permissions & WRITE) ? "w" : "-");

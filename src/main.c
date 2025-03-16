@@ -10,7 +10,7 @@
 void shell()
 {
     char command[100], arg1[100], arg2[100];
-    int perms;
+    int perms, size;
 
     while (1)
     {
@@ -22,9 +22,14 @@ void shell()
         {
             list_files();
         }
-        else if (sscanf(command, "touch %s", arg1) == 1)
+        else if (sscanf(command, "touch %s %d", arg1, &size) == 2)
         {
-            create_file(arg1, 1024); // Taille par défaut de 1024 octets
+            // Si une taille est spécifiée, utiliser cette taille, sinon utiliser la taille par défaut (1024)
+            if (size <= 0)
+            {
+                size = 1024; // Taille par défaut si aucune taille ou taille invalide n'est donnée
+            }
+            create_file(arg1, size);
         }
         else if (sscanf(command, "rm %s", arg1) == 1)
         {
@@ -40,7 +45,7 @@ void shell()
         }
         else if (sscanf(command, "chmod %d %s", &perms, arg2) == 2)
         {
-            set_permissions(arg2, perms); // Correction pour l'assignation des permissions
+            set_permissions(arg2, perms);
         }
         else if (strcmp(command, "exit") == 0)
         {
@@ -58,6 +63,7 @@ void shell()
 int main()
 {
     load_filesystem(FS_NAME); // Charger le système de fichiers
-    shell();                  // Lancer le shell
+    printf("Système de fichiers chargé avec succès.\n");
+    shell(); // Lancer le shell
     return 0;
 }
